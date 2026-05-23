@@ -3,7 +3,7 @@
 const headers = $request.headers;
 const cookie = headers["Cookie"] || headers["cookie"];
 
-if (cookie && cookie.includes("skey=")) {
+if (cookie && cookie.includes("p_skey=")) {
   $prefs.setValueForKey(cookie, "qq_cookie");
 
   // 提取 uin 显示
