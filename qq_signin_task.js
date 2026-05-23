@@ -155,12 +155,14 @@ async function signInOne(cookie) {
 
   // 逐账号顺序执行（避免并发触发风控）
   const results = [];
-  for (const uin of uins) {
+  for (const rawUin of uins) {
+    // 兼容旧存储：key 可能是 "0197351245"，统一去掉前导零
+    const displayUin = String(parseInt(rawUin, 10));
     try {
-      const r = await signInOne(accounts[uin]);
-      results.push(r);
+      const r = await signInOne(accounts[rawUin]);
+      results.push(r);  // r.uin 已由 getUin() 正确处理
     } catch (e) {
-      results.push({ uin, ok: false, subtitle: '请求失败', body: e.message });
+      results.push({ uin: displayUin, ok: false, subtitle: '请求失败', body: e.message });
     }
   }
 
