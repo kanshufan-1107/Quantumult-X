@@ -23,7 +23,10 @@ function calcGtk(cookie) {
 }
 
 function getUin(cookie) {
-  return (cookie.match(/\buin=o?(\d+)/) || [])[1] || '未知';
+  // uin=o0197351245（9位QQ）或 uin=o1569749008（10位QQ）
+  // o 后面可能有补位的 0，用 parseInt 去掉前导零还原真实 QQ 号
+  const m = cookie.match(/\buin=o(\d+)/);
+  return m ? String(parseInt(m[1], 10)) : '未知';
 }
 
 function makeOpts(method, url, cookie, body) {

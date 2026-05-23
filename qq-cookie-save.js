@@ -23,8 +23,10 @@ const cookie = ($request.headers['Cookie'] || $request.headers['cookie'] || '').
 if (!cookie || !cookie.includes('p_skey=')) {
   $done({});
 } else {
-  const uinMatch = cookie.match(/\buin=o?(\d+)/);
-  const uin = uinMatch ? uinMatch[1] : null;
+  // uin=o0197351245（9位QQ）或 uin=o1569749008（10位QQ）
+  // o 后面可能有补位的 0，用 parseInt 去掉前导零还原真实 QQ 号
+  const uinMatch = cookie.match(/\buin=o(\d+)/);
+  const uin = uinMatch ? String(parseInt(uinMatch[1], 10)) : null;
 
   if (!uin) {
     $notify('QQ 打卡', '⚠️ Cookie 保存失败', '无法识别 UIN');
