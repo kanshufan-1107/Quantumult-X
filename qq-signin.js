@@ -11,7 +11,7 @@ function getBkn(skey) {
 const cookie = $prefs.valueForKey("qq_cookie");
 
 if (!cookie) {
-  $notify("QQ 打卡", "❌ 未找到 Cookie", "请先打开一次 QQ 打卡页面");
+  $notify("QQ 打卡", "❌ 未找到 Cookie", "请先打开一次 QQ 更多打卡页面");
   $done();
 }
 
