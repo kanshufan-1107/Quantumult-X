@@ -37,7 +37,7 @@ function doSignIn() {
       $notify("QQ 打卡", "✅ 打卡成功", `今日卡面：${title}`);
     } else if (data.data?.retCode === 100001) {
       $prefs.removeValueForKey("qq_cookie");
-      $notify("QQ 打卡", "🔑 Cookie 已过期", "请打开一次 QQ 打卡页面自动更新");
+      $notify("QQ 打卡", "🔑 Cookie 已过期", "请打开QQ更多打卡页面，自动更新");
     } else {
       $notify("QQ 打卡", "⚠️ 打卡失败", `retCode: ${data.data?.retCode}`);
     }
