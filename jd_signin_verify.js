@@ -129,8 +129,8 @@ function commonHeaders() {
   };
 }
 
-function buildBody(functionId, bodyObj) {
-  const h5st  = CONFIG.tk ? genH5st(functionId, bodyObj, CONFIG.tk) : '';
+function buildBody(functionId, bodyObj, { withH5st = true } = {}) {
+  const h5st  = (withH5st && CONFIG.tk) ? genH5st(functionId, bodyObj, CONFIG.tk) : '';
   const parts = {
     appid             : 'plus_business',
     functionId,
@@ -146,36 +146,68 @@ function buildBody(functionId, bodyObj) {
     .join('&');
 }
 
+// ── 原始 fetch（打印完整响应） ─────────────────────────────────────────────────
+
+async function fetchRaw(label, url, bodyStr) {
+  const res  = await fetch(url, { method: 'POST', headers: commonHeaders(), body: bodyStr });
+  const text = await res.text();
+  console.log(`  [${label}] HTTP ${res.status}`);
+  console.log(`  原始响应：${text.slice(0, 400)}`);
+  try { return JSON.parse(text); } catch { return { _raw: text }; }
+}
+
+// ── Step 0：Cookie 有效性探针（不依赖 h5st） ──────────────────────────────────
+
+async function probeCookie() {
+  // 使用 JD 豆签到接口（无需 h5st，只要 Cookie 有效即可返回数据）
+  const body = JSON.stringify({ appid: 'jd_bean_index' });
+  const form = `functionId=signBeanIndex&appid=gia&body=${encodeURIComponent(body)}&loginType=2`;
+  const res  = await fetch(
+    'https://api.m.jd.com/api?functionId=signBeanIndex',
+    { method: 'POST', headers: commonHeaders(), body: form }
+  );
+  const text = await res.text();
+  console.log(`  [Cookie探针] HTTP ${res.status}  响应：${text.slice(0, 300)}`);
+  try { return JSON.parse(text); } catch { return { _raw: text }; }
+}
+
 // ── Step 1：查询签到状态 ──────────────────────────────────────────────────────
 
 async function querySignStatus() {
-  const body = {
+  const bodyObj = {
     baseVersion : '2.0.0',
     modelVersion: '2.0.0',
     queryTypes  : 'SIGN_DAILY',
     scene       : 'index',
     areaCode    : '0',
   };
-  const res  = await fetch(
+  return fetchRaw(
+    'bff_query',
     'https://api.m.jd.com/api?functionId=bff_rights_center_index&scene=index',
-    { method: 'POST', headers: commonHeaders(), body: buildBody('bff_rights_center_index', body) }
+    buildBody('bff_rights_center_index', bodyObj)
   );
-  return res.json();
 }
 
-// ── Step 2：执行签到 ──────────────────────────────────────────────────────────
+// ── Step 2a：带 h5st 签到 ────────────────────────────────────────────────────
 
 async function doSignIn() {
-  const body = {
-    baseVersion: '2.0.0',
-    scene      : 'signBlindDaily',
-    area       : '0',
-  };
-  const res = await fetch(
+  const bodyObj = { baseVersion: '2.0.0', scene: 'signBlindDaily', area: '0' };
+  return fetchRaw(
+    'sign+h5st',
     'https://api.m.jd.com/api?functionId=bff_rights_center_index_sign&scene=signBlindDaily',
-    { method: 'POST', headers: commonHeaders(), body: buildBody('bff_rights_center_index_sign', body) }
+    buildBody('bff_rights_center_index_sign', bodyObj, { withH5st: true })
   );
-  return res.json();
+}
+
+// ── Step 2b：不带 h5st 签到（对比用） ────────────────────────────────────────
+
+async function doSignInNoH5st() {
+  const bodyObj = { baseVersion: '2.0.0', scene: 'signBlindDaily', area: '0' };
+  return fetchRaw(
+    'sign-noh5st',
+    'https://api.m.jd.com/api?functionId=bff_rights_center_index_sign&scene=signBlindDaily',
+    buildBody('bff_rights_center_index_sign', bodyObj, { withH5st: false })
+  );
 }
 
 // ── Step 3：验证签到结果 ──────────────────────────────────────────────────────
@@ -209,22 +241,23 @@ async function main() {
   console.log(sep);
   console.log(`[信息] h5st tk : ${CONFIG.tk ? CONFIG.tk.substring(0,20) + '...' : '未配置（将跳过 h5st）'}`);
 
-  // Step 1：查询签到前状态
+  // Step 0：Cookie 有效性探针
+  console.log('\n[0/3] Cookie 有效性探针...');
+  try {
+    await probeCookie();
+  } catch (e) {
+    console.warn(`  探针请求失败（${e.message}）`);
+  }
+
+  // Step 1：查询签到前状态（完整原始响应）
   console.log('\n[1/3] 查询签到前状态...');
   let alreadySigned = false;
+  let qResp;
   try {
-    const qResp = await querySignStatus();
+    qResp = await querySignStatus();
     const daily = (qResp.rs || {}).DAILY || {};
     const code  = String(qResp.code || '');
-
-    if (code !== '1711000') {
-      console.log(`  ⚠️  查询返回异常 code=${code}，${qResp.msg || ''}`);
-      if (code === '3') {
-        console.log('  ❌ Cookie 已过期，请重新抓包更新');
-        console.log(sep);
-        process.exit(1);
-      }
-    } else {
+    if (code === '1711000') {
       const signStatus = daily.signStatus ?? daily.todaySigned ?? null;
       console.log(`  今日签到状态 : ${signStatus === 1 ? '已签到' : signStatus === 0 ? '未签到' : '未知'}`);
       if (signStatus === 1) {
@@ -235,19 +268,26 @@ async function main() {
       }
     }
   } catch (e) {
-    console.warn(`  查询失败（${e.message}），继续尝试签到...`);
+    console.warn(`  查询失败（${e.message}）`);
   }
 
-  // Step 2：执行签到
-  console.log('\n[2/3] 发送签到请求...');
+  // Step 2：带 h5st 签到
+  console.log('\n[2/3] 发送签到请求（带 h5st）...');
   let signResp;
   try {
     signResp = await doSignIn();
-    console.log(`  响应 code : ${signResp.code}`);
-    console.log(`  响应 msg  : ${signResp.msg || ''}`);
   } catch (e) {
     console.error(`  ❌ 网络请求失败：${e.message}`);
     process.exit(1);
+  }
+
+  // Step 2b：若签到失败，再试不带 h5st（对比两者错误码是否相同）
+  const mainCode = String(signResp.code || '');
+  if (mainCode !== '1711000' && mainCode !== '1712000') {
+    console.log('\n[2b] 对比：不带 h5st 再请求一次...');
+    try {
+      await doSignInNoH5st();
+    } catch (_) {}
   }
 
   // Step 3：验证结果
