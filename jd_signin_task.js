@@ -198,16 +198,13 @@ function querySignStatus(cookie, ua, tk, hashArg) {
 // 执行签到
 // ═══════════════════════════════════════════════════════════
 
-function doSignIn(cookie, ua, tk, eid, hashArg) {
+function doSignIn(cookie, ua, tk, eid) {
   const body = {
     baseVersion : '2.0.0',
     scene       : 'signBlindDaily',
     area        : '0',
   };
-  // h5st 可选：服务端不强制验证，不带时返回正常结果
-  // 若有真实 appHash（5位）则带上，否则跳过避免签名错误
-  const realHash = (hashArg && hashArg.length === 5) ? hashArg : null;
-  const h5st = (tk && realHash) ? genH5st(FUNC_SIGN, body, tk, realHash) : '';
+  // 签到接口不携带 h5st：带错误签名会触发 1714001，不带则正常返回
   const params = {
     appid      : APPID,
     functionId : FUNC_SIGN,
@@ -216,8 +213,7 @@ function doSignIn(cookie, ua, tk, eid, hashArg) {
     scval      : 'test01',
     xAPIClientLanguage: 'zh_CN',
   };
-  if (h5st) params.h5st = h5st;
-  if (eid)  params['x-api-eid-token'] = eid;
+  if (eid) params['x-api-eid-token'] = eid;
   return fetchJSON(buildOpts(SIGN_URL, cookie, ua, params));
 }
 
@@ -267,8 +263,8 @@ async function signInOne(pin, account) {
     // 查询失败不中断
   }
 
-  // 执行签到
-  const signResp = await doSignIn(cookie, ua || defaultUA, tk, eid, hashArg);
+  // 执行签到（不带 h5st，服务端可正常处理）
+  const signResp = await doSignIn(cookie, ua || defaultUA, tk, eid);
   const result   = verifyResult(signResp);
   return { pin, ...result };
 }
