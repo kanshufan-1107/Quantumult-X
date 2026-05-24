@@ -238,6 +238,10 @@ function verifyResult(json) {
   if (code === '3' || msg.includes('登录') || msg.includes('login')) {
     return { ok: false, subtitle: 'Cookie 已过期', body: '请重新打开签到页面刷新' };
   }
+  // 限流（今日已多次请求，非脚本错误）
+  if (code === '1714001') {
+    return { ok: false, subtitle: '请求过于频繁，稍后自动重试', body: '服务端限流，非 Cookie 问题，明日首次运行可恢复正常' };
+  }
   return { ok: false, subtitle: `签到失败 code=${code}`, body: msg };
 }
 
