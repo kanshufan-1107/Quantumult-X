@@ -204,7 +204,10 @@ function doSignIn(cookie, ua, tk, eid, hashArg) {
     scene       : 'signBlindDaily',
     area        : '0',
   };
-  const h5st = tk ? genH5st(FUNC_SIGN, body, tk, hashArg || APPID) : '';
+  // h5st 可选：服务端不强制验证，不带时返回正常结果
+  // 若有真实 appHash（5位）则带上，否则跳过避免签名错误
+  const realHash = (hashArg && hashArg.length === 5) ? hashArg : null;
+  const h5st = (tk && realHash) ? genH5st(FUNC_SIGN, body, tk, realHash) : '';
   const params = {
     appid      : APPID,
     functionId : FUNC_SIGN,
@@ -232,8 +235,8 @@ function verifyResult(json) {
     const reward = rs.rewardDesc || rs.signDesc || rs.pointsDesc || '';
     return { ok: true, subtitle: '签到成功', body: reward || '每日签到完成 ✅' };
   }
-  // 已签到
-  if (code === '1712000' || msg.includes('已签') || msg.includes('repeated')) {
+  // 已签到（1711002 = 今天已完成签到，1712000 = 重复签到）
+  if (code === '1711002' || code === '1712000' || msg.includes('已签') || msg.includes('已完成签到') || msg.includes('repeated')) {
     return { ok: true, subtitle: '今日已签到', body: '' };
   }
   // 未登录

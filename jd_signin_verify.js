@@ -10,22 +10,19 @@
 // ── 配置区（Cookie 过期后在此更新） ──────────────────────────────────────────
 
 const CONFIG = {
-  // 从 $prefs jd_cookies 存储中提取的最新 Cookie（2026-05-24）
-  // Cookie 过期后整行替换即可
-  cookie: 'pt_key=app_openAAJqEnjMADAiCo-UWD929dF12O9QtSVkSOWpi7uvMialKxOLvB81Tf3ZDf656Qj01Jg7jzECadQ; pt_pin=jd_7737ee0307dbc; sdtoken=AAbEsBpEIOVjqTAKCQtvQu175lWucXLr3sfvHxcaDoYAl2s1nOTuIuSUHzF-mJgBq9CZMiqMJeIHbEC_f5cnkVn2IvnISyydqt4s6g1l28cUU40OauqANIjIngZCPO6q0B9FDCsbM7yHKWioSfnkEN91bbF5CB1EPvCVma0VZ9zRglLPd2hZUXoXYO6k; 3AB9D23F7A4B3C9B=UVD2R6TC7UF5QEYOM6QDJKRIJXD5S7J4Z35S5HE7N2NJFLMVAFLWQ2KOEBM7MQZBQ7CVXFCWXTURIDSTFGBJIADGIE; 3AB9D23F7A4B3CSS=jdd03UVD2R6TC7UF5QEYOM6QDJKRIJXD5S7J4Z35S5HE7N2NJFLMVAFLWQ2KOEBM7MQZBQ7CVXFCWXTURIDSTFGBJIADGIEAAAAM6LESSD5AAAAAAC6J2NQNCQFOFMMX; shshshfpa=4dfd26fa-c978-1d2d-0a6d-51b6380327a4-1777819457; shshshfpb=BApXWsrotWvtAC4jqOz_zmbikOMGDxZZ-BjXAk3hv9xJ1ItZfQtGBwU3uiXupY9F3cbZ6iTaOsqFbIusz464L59gjMVywrzBD6Hzu; shshshfpv=JD0211d47d50MBQ4U8si177911627229507Joqnk09VDy9BsbgagqJjZUOMjxFw8Je7AzFKtytCCvM8fmRxMtgJDN2_pRiNxzT4TWyOjPilHb9n0rErU0ePYERWHQI6yuFXyp1CJfAh5B9XI9RL2FelKZntLhW1GzkM09arg34~BApXWlHqfOPtDa_x7qG-4WKvd9RNIvHOAuML0OBRm9xJ1ItZfQtGBwU3uiXupY9F3cbYxiTaOsqFbdu1jvq0K4t1-M16wrmGMpyHL; shshshfpx=4dfd26fa-c978-1d2d-0a6d-51b6380327a4-1777819457; __jda=122270672.17778194571171444512496.1777819457.1779607316.1779611363.44; __jdb=122270672.6.17778194571171444512496|44.1779611363; __jdc=122270672; __jdv=122270672%7Cdsp-yule1%7Ct_262767352_dspyule1%7Ccpc%7C1666022193_0_d7b23d9c91a5102cc06c2e6a0e8efa37%7C1779116272000; mba_muid=17778194571171444512496.47.1779612068098; mba_sid=47.3; __jd_ref_cls=Babel_H5FirstClick; unpl=JF8EAH9nNSttDU0HBhlXE0AYSw1QXlwLGUUCaDUGAFoISgAMT1VLEBZ7XlVdWhRKEx9vbhRXXlNPUg4fASsiE0xeUllbCk8UMzolRBwZBR9UaxsFHBURSF5UVl84exQDX2cEZG1Ze1M1KzIfFhFOWVxuXDhKJ0E7OwJWVF1NVUgrAysR%7CJF8EAMVnNSttWEpUDRoEGBUUS1tUW1kJTREDaWEMVVtYQl0BEgQaIhNKXlNCXAxXFgR-ZARfWVhAVwErMhgTEk1eVVZeAEwnA2pnDFZeaE06AB8GExIUSVs6XVwJJWpbKDNHFUFaSlNrG2wbFxBCX1cwbQtLJwJfZwNSW1FLXAAfBBsSFktYUVtZCEgSC2hXBGRUWXtUBBgCGxcXTlVWXloNTyczblcEZFxoADoEVgIdFBZCXVxbWQ5LFwVvYgBRWVhIUQ0cMhoiEA',
+  // 从 $prefs jd_cookies 存储中提取的最新 Cookie（2026-05-24 第二次抓包）
+  cookie: 'pt_key=app_openAAJqEs9RADB9wG2lPvdv4Qo4Eleig8QlWF9uo_mltAP8q2KhJcYO3XzabGKi4OHQh446wCjoFrM; pt_pin=jd_7737ee0307dbc; sdtoken=AAbEsBpEIOVjqTAKCQtvQu17rcSLOv-MGXTA2siPcG6wKanblmMBPGQX_vy2sxsxV9cJZw8HHTmJ071F89mvgyi7ZJgpJBSilHbUp4Z-ev3962u4_DHNEfapLr6KRlPrjgUfWMGuSmPutMjECkCeFCMKaF3WRbD2nsJfb2amJGa96BEh15v2xolxWMRO; 3AB9D23F7A4B3C9B=UVD2R6TC7UF5QEYOM6QDJKRIJXD5S7J4Z35S5HE7N2NJFLMVAFLWQ2KOEBM7MQZBQ7CVXFCWXTURIDSTFGBJIADGIE; 3AB9D23F7A4B3CSS=jdd03UVD2R6TC7UF5QEYOM6QDJKRIJXD5S7J4Z35S5HE7N2NJFLMVAFLWQ2KOEBM7MQZBQ7CVXFCWXTURIDSTFGBJIADGIEAAAAM6LGFCLSYAAAAACUGYOFGOEM7F2EX; shshshfpa=5fc58585-7449-b2c9-307c-5050cd9c84f7-1779617602; shshshfpb=BApXWULiCWvtAMyuVhg5cfYK1OSd2WjUtBjsgcS1o9xJ1ItZfQtGBwU3uiXupY9F3cbZ7GdONsqFbIusz464L59gjMVywrzAvyDSX; shshshfpx=5fc58585-7449-b2c9-307c-5050cd9c84f7-1779617602; __jda=122270672.17796176025961783424059.1779617602.1779617602.1779617602.1; __jdb=122270672.6.17796176025961783424059|1.1779617602; __jdc=122270672; __jdv=122270672%7Cdsp-yule1%7Ct_262767352_dspyule1%7Ccpc%7C1666022193_0_d7b23d9c91a5102cc06c2e6a0e8efa37%7C1779116272000; mba_muid=17796176025961783424059.48.1779618688065; mba_sid=48.3; __jd_ref_cls=Babel_H5FirstClick; unpl=JF8EAH9nNSttDU0HBhlXE0AYSw1QXlwLGUUCaDUGAFoISgAMT1VLEBZ7XlVdWhRKEx9vbhRXXlNPUg4fASsiE0xeUllbCk8UMzolRBwZBR9UaxsFHBURSF5UVl84exQDX2cEZG1Ze1M1KzIfFhFOWVxuXDhKJ0E7OwJWVF1NVUgrAysR%7CJF8EAMVnNSttWEpUDRoEGBUUS1tUW1kJTREDaWEMVVtYQl0BEgQaIhNKXlNCXAxXFgR-ZARfWVhAVwErMhgTEk1eVVZeAEwnA2pnDFZeaE06AB8GExIUSVs6XVwJJWpbKDNHFUFaSlNrG2wbFxBCX1cwbQtLJwJfZwNSW1FLXAAfBBsSFktYUVtZCEgSC2hXBGRUWXtUBBgCGxcXTlVWXloNTyczblcEZFxoADoEVgIdFBZCXVxbWQ5LFwVvYgBRWVhIUQ0cMhoiEA',
 
-  // h5st 中的 tk token（从 $prefs jd_cookies 存储中提取）
+  // h5st tk token
   tk: 'tk03wec6c1df918ncnyKsZprQtt0z8IkJ5FicvOFwME9Qa4MofKPvThHhwhVyQMUNkTyqkE7wlmZLwf1xhjE1biwOSXs',
 
-  // 真实 appHash：从京东 App 实际请求的 h5st 第3段提取（5位十六进制）
-  // 重新抓包后通知里会显示 appHash=xxxxx，填入此处
-  // 留空则暂时跳过 h5st（用于排查）
-  appHash: '',
+  // 真实 appHash（从京东 App h5st 第3段提取）
+  appHash: '1ff7a',
 
-  // x-api-eid-token（从 $prefs jd_cookies 存储中提取）
-  eid: 'jdd03UVD2R6TC7UF5QEYOM6QDJKRIJXD5S7J4Z35S5HE7N2NJFLMVAFLWQ2KOEBM7MQZBQ7CVXFCWXTURIDSTFGBJIADGIEAAAAM6LESSD5AAAAAAC6J2NQNCQFOFMMX',
+  // x-api-eid-token
+  eid: 'jdd03UVD2R6TC7UF5QEYOM6QDJKRIJXD5S7J4Z35S5HE7N2NJFLMVAFLWQ2KOEBM7MQZBQ7CVXFCWXTURIDSTFGBJIADGIEAAAAM6LGFCLSYAAAAACUGYOFGOEM7F2EX',
 
-  userAgent: 'jdapp;iPhone;15.7.50;;;M/5.0;appBuild/170469;jdSupportDarkMode/0;lang/zh_CN;ctype/0;site/CN;ccy/CNY;elder/0;ef/1;ep/%7B%22ciphertype%22%3A5%2C%22cipher%22%3A%7B%22ud%22%3A%22EWG1CtZsDWOyENU2ZWCnEJO0EWC2DQYzD2PtCtVrYJu4CQS1C2YzYq%3D%3D%22%2C%22sv%22%3A%22CtYkDK%3D%3D%22%2C%22iad%22%3A%22%22%7D%2C%22ts%22%3A1779612067%2C%22hdid%22%3A%22JM9F1ywUPwflvMIpYPok0tt5k9kW4ArJEU3lfLhxBqw%3D%22%2C%22version%22%3A%221.0.3%22%2C%22appname%22%3A%22com.360buy.jdmobile%22%2C%22ridx%22%3A-1%7D;Mozilla/5.0 (iPhone; CPU iPhone OS 26_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1;',
+  userAgent: 'jdapp;iPhone;15.7.50;;;M/5.0;appBuild/170469;jdSupportDarkMode/0;lang/zh_CN;ctype/0;site/CN;ccy/CNY;elder/0;ef/1;ep/%7B%22ciphertype%22%3A5%2C%22cipher%22%3A%7B%22ud%22%3A%22EWG1CtZsDWOyENU2ZWCnEJO0EWC2DQYzD2PtCtVrYJu4CQS1C2YzYq%3D%3D%22%2C%22sv%22%3A%22CtYkDK%3D%3D%22%2C%22iad%22%3A%22%22%7D%2C%22ts%22%3A1779618687%2C%22hdid%22%3A%22JM9F1ywUPwflvMIpYPok0tt5k9kW4ArJEU3lfLhxBqw%3D%22%2C%22version%22%3A%221.0.3%22%2C%22appname%22%3A%22com.360buy.jdmobile%22%2C%22ridx%22%3A-1%7D;Mozilla/5.0 (iPhone; CPU iPhone OS 26_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1;',
 };
 
 // ── MD5 实现（纯 JS，无外部依赖） ─────────────────────────────────────────────
@@ -153,32 +150,7 @@ function buildBody(functionId, bodyObj, { withH5st = true } = {}) {
     .join('&');
 }
 
-// ── 原始 fetch（打印完整响应） ─────────────────────────────────────────────────
-
-async function fetchRaw(label, url, bodyStr) {
-  const res  = await fetch(url, { method: 'POST', headers: commonHeaders(), body: bodyStr });
-  const text = await res.text();
-  console.log(`  [${label}] HTTP ${res.status}`);
-  console.log(`  原始响应：${text.slice(0, 400)}`);
-  try { return JSON.parse(text); } catch { return { _raw: text }; }
-}
-
-// ── Step 0：Cookie 有效性探针（不依赖 h5st） ──────────────────────────────────
-
-async function probeCookie() {
-  // 使用 JD 豆签到接口（无需 h5st，只要 Cookie 有效即可返回数据）
-  const body = JSON.stringify({ appid: 'jd_bean_index' });
-  const form = `functionId=signBeanIndex&appid=gia&body=${encodeURIComponent(body)}&loginType=2`;
-  const res  = await fetch(
-    'https://api.m.jd.com/api?functionId=signBeanIndex',
-    { method: 'POST', headers: commonHeaders(), body: form }
-  );
-  const text = await res.text();
-  console.log(`  [Cookie探针] HTTP ${res.status}  响应：${text.slice(0, 300)}`);
-  try { return JSON.parse(text); } catch { return { _raw: text }; }
-}
-
-// ── Step 1：查询签到状态 ──────────────────────────────────────────────────────
+// ── Step 1：查询签到状态（不带 h5st） ────────────────────────────────────────
 
 async function querySignStatus() {
   const bodyObj = {
@@ -188,33 +160,22 @@ async function querySignStatus() {
     scene       : 'index',
     areaCode    : '0',
   };
-  return fetchRaw(
-    'bff_query',
+  const res  = await fetch(
     'https://api.m.jd.com/api?functionId=bff_rights_center_index&scene=index',
-    buildBody('bff_rights_center_index', bodyObj)
+    { method: 'POST', headers: commonHeaders(), body: buildBody('bff_rights_center_index', bodyObj, { withH5st: false }) }
   );
+  return res.json();
 }
 
-// ── Step 2a：带 h5st 签到 ────────────────────────────────────────────────────
+// ── Step 2：执行签到（不带 h5st） ────────────────────────────────────────────
 
 async function doSignIn() {
   const bodyObj = { baseVersion: '2.0.0', scene: 'signBlindDaily', area: '0' };
-  return fetchRaw(
-    'sign+h5st',
+  const res = await fetch(
     'https://api.m.jd.com/api?functionId=bff_rights_center_index_sign&scene=signBlindDaily',
-    buildBody('bff_rights_center_index_sign', bodyObj, { withH5st: true })
+    { method: 'POST', headers: commonHeaders(), body: buildBody('bff_rights_center_index_sign', bodyObj, { withH5st: false }) }
   );
-}
-
-// ── Step 2b：不带 h5st 签到（对比用） ────────────────────────────────────────
-
-async function doSignInNoH5st() {
-  const bodyObj = { baseVersion: '2.0.0', scene: 'signBlindDaily', area: '0' };
-  return fetchRaw(
-    'sign-noh5st',
-    'https://api.m.jd.com/api?functionId=bff_rights_center_index_sign&scene=signBlindDaily',
-    buildBody('bff_rights_center_index_sign', bodyObj, { withH5st: false })
-  );
+  return res.json();
 }
 
 // ── Step 3：验证签到结果 ──────────────────────────────────────────────────────
@@ -228,10 +189,11 @@ function verifyResult(json) {
     const reward = rs.rewardDesc || rs.signDesc || rs.pointsDesc || '';
     return { success: true, reward };
   }
-  if (code === '1712000' || msg.includes('已签') || msg.includes('repeated')) {
+  // 1711002 = 今天已完成签到
+  if (code === '1711002' || code === '1712000' || msg.includes('已签') || msg.includes('已完成签到') || msg.includes('repeated')) {
     return { success: true, alreadySigned: true };
   }
-  if (code === '3' || msg.includes('登录') || msg.includes('login')) {
+  if (code === 'F10002' || code === '3' || msg.includes('登录') || msg.includes('login')) {
     return { success: false, reason: 'Cookie 已过期，请重新抓包更新' };
   }
   return { success: false, reason: `code=${code}，${msg}` };
@@ -246,55 +208,38 @@ async function main() {
   console.log(sep);
   console.log(` 京东每日签到验证  账号：${pin}`);
   console.log(sep);
-  console.log(`[信息] h5st tk : ${CONFIG.tk ? CONFIG.tk.substring(0,20) + '...' : '未配置（将跳过 h5st）'}`);
 
-  // Step 0：Cookie 有效性探针
-  console.log('\n[0/3] Cookie 有效性探针...');
-  try {
-    await probeCookie();
-  } catch (e) {
-    console.warn(`  探针请求失败（${e.message}）`);
-  }
-
-  // Step 1：查询签到前状态（完整原始响应）
+  // Step 1：查询签到前状态
   console.log('\n[1/3] 查询签到前状态...');
-  let alreadySigned = false;
-  let qResp;
   try {
-    qResp = await querySignStatus();
+    const qResp = await querySignStatus();
     const daily = (qResp.rs || {}).DAILY || {};
     const code  = String(qResp.code || '');
     if (code === '1711000') {
       const signStatus = daily.signStatus ?? daily.todaySigned ?? null;
-      console.log(`  今日签到状态 : ${signStatus === 1 ? '已签到' : signStatus === 0 ? '未签到' : '未知'}`);
+      console.log(`  今日签到状态 : ${signStatus === 1 ? '✅ 已签到' : signStatus === 0 ? '未签到' : '未知'}`);
       if (signStatus === 1) {
-        alreadySigned = true;
         console.log('\n⚠️  今日已签到，无需重复操作。');
         console.log(sep);
         return;
       }
+    } else {
+      console.log(`  查询返回 code=${code}，${qResp.msg || ''}，继续尝试签到...`);
     }
   } catch (e) {
-    console.warn(`  查询失败（${e.message}）`);
+    console.warn(`  查询失败（${e.message}），继续尝试签到...`);
   }
 
-  // Step 2：带 h5st 签到
-  console.log('\n[2/3] 发送签到请求（带 h5st）...');
+  // Step 2：执行签到
+  console.log('\n[2/3] 发送签到请求...');
   let signResp;
   try {
     signResp = await doSignIn();
+    console.log(`  响应 code : ${signResp.code}`);
+    console.log(`  响应 msg  : ${signResp.msg || ''}`);
   } catch (e) {
     console.error(`  ❌ 网络请求失败：${e.message}`);
     process.exit(1);
-  }
-
-  // Step 2b：若签到失败，再试不带 h5st（对比两者错误码是否相同）
-  const mainCode = String(signResp.code || '');
-  if (mainCode !== '1711000' && mainCode !== '1712000') {
-    console.log('\n[2b] 对比：不带 h5st 再请求一次...');
-    try {
-      await doSignInNoH5st();
-    } catch (_) {}
   }
 
   // Step 3：验证结果
