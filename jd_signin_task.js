@@ -173,7 +173,7 @@ function fetchJSON(opts) {
 // 签到前查询
 // ═══════════════════════════════════════════════════════════
 
-function querySignStatus(cookie, ua, tk, hashArg) {
+function querySignStatus(cookie, ua) {
   const body = {
     baseVersion  : '2.0.0',
     modelVersion : '2.0.0',
@@ -181,7 +181,7 @@ function querySignStatus(cookie, ua, tk, hashArg) {
     scene        : 'index',
     areaCode     : '0',
   };
-  const h5st = tk ? genH5st(FUNC_QUERY, body, tk, hashArg || APPID) : '';
+  // 不携带 h5st，避免错误签名触发限流
   const params = {
     appid      : APPID,
     functionId : FUNC_QUERY,
@@ -190,7 +190,6 @@ function querySignStatus(cookie, ua, tk, hashArg) {
     scval      : 'test01',
     xAPIClientLanguage: 'zh_CN',
   };
-  if (h5st) params.h5st = h5st;
   return fetchJSON(buildOpts(QUERY_URL, cookie, ua, params));
 }
 
@@ -253,8 +252,8 @@ async function signInOne(pin, account) {
   const hashArg = appHash || 'plus_business';
 
   try {
-    // 先查询状态
-    const queryResp = await querySignStatus(cookie, ua || defaultUA, tk, hashArg);
+    // 先查询状态（不带 h5st）
+    const queryResp = await querySignStatus(cookie, ua || defaultUA);
     const daily = ((queryResp.rs || {}).DAILY) || {};
     if (daily.signStatus === 1 || daily.todaySigned) {
       return { pin, ok: true, subtitle: '今日已签到', body: '' };
