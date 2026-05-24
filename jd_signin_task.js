@@ -101,7 +101,9 @@ function genH5st(functionId, bodyObj, tk, appId) {
   const ts      = String(Date.now());
   const ds      = dateStr();
   const rand    = randomStr();
-  const appHash = md5(appId).substring(0, 5);
+  // appId 传入的是从 $prefs 提取的真实 appHash（5位），直接使用；
+  // 若为空或不是5位则回退到计算值（兼容旧存储）
+  const appHash = (appId && appId.length === 5) ? appId : md5(appId || 'plus_business').substring(0, 5);
   const bodyStr = JSON.stringify(bodyObj);
 
   // 签名原文: dateStr\nrandom\nappHash\ntk\n5.3\nts\nfunctionId\nbodyStr
@@ -171,7 +173,7 @@ function fetchJSON(opts) {
 // 签到前查询
 // ═══════════════════════════════════════════════════════════
 
-function querySignStatus(cookie, ua, tk) {
+function querySignStatus(cookie, ua, tk, hashArg) {
   const body = {
     baseVersion  : '2.0.0',
     modelVersion : '2.0.0',
@@ -179,7 +181,7 @@ function querySignStatus(cookie, ua, tk) {
     scene        : 'index',
     areaCode     : '0',
   };
-  const h5st = tk ? genH5st(FUNC_QUERY, body, tk, APPID) : '';
+  const h5st = tk ? genH5st(FUNC_QUERY, body, tk, hashArg || APPID) : '';
   const params = {
     appid      : APPID,
     functionId : FUNC_QUERY,
@@ -196,13 +198,13 @@ function querySignStatus(cookie, ua, tk) {
 // 执行签到
 // ═══════════════════════════════════════════════════════════
 
-function doSignIn(cookie, ua, tk, eid) {
+function doSignIn(cookie, ua, tk, eid, hashArg) {
   const body = {
     baseVersion : '2.0.0',
     scene       : 'signBlindDaily',
     area        : '0',
   };
-  const h5st = tk ? genH5st(FUNC_SIGN, body, tk, APPID) : '';
+  const h5st = tk ? genH5st(FUNC_SIGN, body, tk, hashArg || APPID) : '';
   const params = {
     appid      : APPID,
     functionId : FUNC_SIGN,
@@ -246,12 +248,14 @@ function verifyResult(json) {
 // ═══════════════════════════════════════════════════════════
 
 async function signInOne(pin, account) {
-  const { cookie, tk, eid, ua } = account;
+  const { cookie, tk, appHash, eid, ua } = account;
   const defaultUA = 'jdapp;iPhone;15.7.50;;;M/5.0;appBuild/170469;jdSupportDarkMode/0;lang/zh_CN;ctype/0;site/CN;ccy/CNY';
+  // appHash 为真实 5 位值（由 jd-cookie-save.js 捕获），传给 genH5st 代替 appId
+  const hashArg = appHash || 'plus_business';
 
   try {
     // 先查询状态
-    const queryResp = await querySignStatus(cookie, ua || defaultUA, tk);
+    const queryResp = await querySignStatus(cookie, ua || defaultUA, tk, hashArg);
     const daily = ((queryResp.rs || {}).DAILY) || {};
     if (daily.signStatus === 1 || daily.todaySigned) {
       return { pin, ok: true, subtitle: '今日已签到', body: '' };
@@ -261,7 +265,7 @@ async function signInOne(pin, account) {
   }
 
   // 执行签到
-  const signResp = await doSignIn(cookie, ua || defaultUA, tk, eid);
+  const signResp = await doSignIn(cookie, ua || defaultUA, tk, eid, hashArg);
   const result   = verifyResult(signResp);
   return { pin, ...result };
 }

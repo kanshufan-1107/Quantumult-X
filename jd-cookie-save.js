@@ -55,6 +55,7 @@ if (!pin || !cookie.includes('pt_key=')) {
 
   // ── 从 Body 提取 h5st tk token ────────────────────────────────────────────
   let tk = '';
+  let appHash = '';
   try {
     // h5st 格式: 时间戳;随机;appHash;tk03w...;md5;版本;ts;加密数据
     const h5stMatch = bodyRaw.match(/h5st=([^&]+)/);
@@ -62,7 +63,8 @@ if (!pin || !cookie.includes('pt_key=')) {
       const h5st  = decodeURIComponent(h5stMatch[1]);
       const parts = h5st.split(';');
       if (parts.length >= 4 && parts[3].startsWith('tk')) {
-        tk = parts[3];
+        appHash = parts[2]; // 京东 App 内嵌的真实 5 位哈希
+        tk      = parts[3];
       }
     }
   } catch (_) {}
@@ -84,15 +86,18 @@ if (!pin || !cookie.includes('pt_key=')) {
     if (raw) accounts = JSON.parse(raw);
   } catch (_) {}
 
-  const isNew    = !accounts[pin];
-  const prevTk   = (accounts[pin] || {}).tk || '';
-  const finalTk  = tk || prevTk; // tk 优先用最新的
+  const isNew       = !accounts[pin];
+  const prevTk      = (accounts[pin] || {}).tk      || '';
+  const prevAppHash = (accounts[pin] || {}).appHash || '';
+  const finalTk     = tk      || prevTk;
+  const finalHash   = appHash || prevAppHash; // 优先保留最新真实 appHash
 
   accounts[pin] = {
-    cookie: savedCookie,
-    tk    : finalTk,
-    eid   : eid || (accounts[pin] || {}).eid || '',
-    ua    : ua  || (accounts[pin] || {}).ua  || '',
+    cookie : savedCookie,
+    tk     : finalTk,
+    appHash: finalHash,
+    eid    : eid || (accounts[pin] || {}).eid || '',
+    ua     : ua  || (accounts[pin] || {}).ua  || '',
   };
 
   $prefs.setValueForKey(JSON.stringify(accounts), 'jd_cookies');
@@ -101,7 +106,7 @@ if (!pin || !cookie.includes('pt_key=')) {
   $notify(
     '京东签到',
     isNew ? `🆕 新增账号 ${pin}` : `🔄 账号 ${pin} Cookie 已更新`,
-    `共 ${total} 个账号已保存${finalTk ? '，tk token ✅' : '，⚠️ tk token 未获取'}`
+    `共 ${total} 个账号已保存${finalTk ? `，tk ✅` : '，⚠️ tk 未获取'}${finalHash ? `，appHash=${finalHash}` : ''}`
   );
 
   $done({});

@@ -17,6 +17,11 @@ const CONFIG = {
   // h5st 中的 tk token（从 $prefs jd_cookies 存储中提取）
   tk: 'tk03wec6c1df918ncnyKsZprQtt0z8IkJ5FicvOFwME9Qa4MofKPvThHhwhVyQMUNkTyqkE7wlmZLwf1xhjE1biwOSXs',
 
+  // 真实 appHash：从京东 App 实际请求的 h5st 第3段提取（5位十六进制）
+  // 重新抓包后通知里会显示 appHash=xxxxx，填入此处
+  // 留空则暂时跳过 h5st（用于排查）
+  appHash: '',
+
   // x-api-eid-token（从 $prefs jd_cookies 存储中提取）
   eid: 'jdd03UVD2R6TC7UF5QEYOM6QDJKRIJXD5S7J4Z35S5HE7N2NJFLMVAFLWQ2KOEBM7MQZBQ7CVXFCWXTURIDSTFGBJIADGIEAAAAM6LESSD5AAAAAAC6J2NQNCQFOFMMX',
 
@@ -130,7 +135,9 @@ function commonHeaders() {
 }
 
 function buildBody(functionId, bodyObj, { withH5st = true } = {}) {
-  const h5st  = (withH5st && CONFIG.tk) ? genH5st(functionId, bodyObj, CONFIG.tk) : '';
+  // 优先用真实 appHash；若未填则回退到 md5('plus_business') 计算值
+  const hashArg = (CONFIG.appHash && CONFIG.appHash.length === 5) ? CONFIG.appHash : 'plus_business';
+  const h5st  = (withH5st && CONFIG.tk) ? genH5st(functionId, bodyObj, CONFIG.tk, hashArg) : '';
   const parts = {
     appid             : 'plus_business',
     functionId,
